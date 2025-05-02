@@ -93,6 +93,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
     } catch (error) {
       console.error("Login error:", error);
+      toast({
+        title: "Login Failed",
+        description: "Please check your credentials and try again.",
+        variant: "destructive"
+      });
       throw error;
     } finally {
       setIsLoading(false);
@@ -107,9 +112,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       setToken(response.token);
       setUser({
-        id: response.user.id,
-        name: response.user.name,
-        email: response.user.email
+        id: response.user.id || response.id,
+        name: response.user.name || name,
+        email: response.user.email || email
       });
       
       // Store the token in localStorage
@@ -117,11 +122,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       toast({
         title: "Registration Successful",
-        description: `Welcome to MediAI, ${response.user.name}!`,
+        description: `Welcome to MediAI, ${name}!`,
       });
       
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration error:", error);
+      const errorMsg = error.response?.data?.message || "Registration failed. Please try again.";
+      toast({
+        title: "Registration Failed",
+        description: errorMsg,
+        variant: "destructive"
+      });
       throw error;
     } finally {
       setIsLoading(false);

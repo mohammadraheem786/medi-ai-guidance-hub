@@ -49,7 +49,7 @@ const Register = () => {
       await registerUser(values.name, values.email, values.password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.response?.data?.message || 'Registration failed. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +72,7 @@ const Register = () => {
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       transition={{ duration: 0.5 }}
-      className="pt-20 min-h-screen flex items-center justify-center bg-gray-50 px-4"
+      className="pt-20 min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4"
     >
       <div className="w-full max-w-md">
         <motion.div
@@ -80,12 +80,12 @@ const Register = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <Card className="shadow-lg">
+          <Card className="shadow-lg border-medical-200 dark:border-medical-800">
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold text-center">
                 <span className="medical-text-gradient">Create your MediAI account</span>
               </CardTitle>
-              <CardDescription className="text-center">
+              <CardDescription className="text-center dark:text-gray-400">
                 Enter your details to create an account
               </CardDescription>
             </CardHeader>
@@ -109,6 +109,7 @@ const Register = () => {
                             type="text" 
                             {...field} 
                             disabled={isSubmitting}
+                            className="bg-white dark:bg-gray-800"
                           />
                         </FormControl>
                         <FormMessage />
@@ -127,6 +128,7 @@ const Register = () => {
                             type="email" 
                             {...field} 
                             disabled={isSubmitting}
+                            className="bg-white dark:bg-gray-800"
                           />
                         </FormControl>
                         <FormMessage />
@@ -145,6 +147,7 @@ const Register = () => {
                             type="password" 
                             {...field} 
                             disabled={isSubmitting}
+                            className="bg-white dark:bg-gray-800"
                           />
                         </FormControl>
                         <FormMessage />
@@ -163,6 +166,7 @@ const Register = () => {
                             type="password" 
                             {...field} 
                             disabled={isSubmitting}
+                            className="bg-white dark:bg-gray-800"
                           />
                         </FormControl>
                         <FormMessage />
@@ -171,7 +175,7 @@ const Register = () => {
                   />
                   <Button 
                     type="submit" 
-                    className="w-full bg-medical-500 hover:bg-medical-600" 
+                    className="w-full bg-medical-500 hover:bg-medical-600 dark:bg-medical-600 dark:hover:bg-medical-500" 
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? <Loader className="animate-spin mr-2" size={16} /> : null}
@@ -181,9 +185,9 @@ const Register = () => {
               </Form>
             </CardContent>
             <CardFooter className="flex flex-col space-y-2 text-center">
-              <div className="text-sm">
+              <div className="text-sm dark:text-gray-400">
                 Already have an account?{' '}
-                <Link to="/login" className="text-medical-600 hover:underline">
+                <Link to="/login" className="text-medical-600 hover:underline dark:text-medical-400">
                   Sign in
                 </Link>
               </div>

@@ -1,10 +1,10 @@
-
 import axios from 'axios';
 import { toast } from '@/components/ui/use-toast';
 
 // Create axios instance with base URL
+// Using relative URL to make it work in both development and production
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: '/api',
 });
 
 // Add a request interceptor to add auth token
@@ -26,11 +26,15 @@ api.interceptors.response.use(
   response => response,
   error => {
     const message = error.response?.data?.message || 'An error occurred';
-    toast({
-      title: 'Error',
-      description: message,
-      variant: 'destructive'
-    });
+    
+    // Don't show network errors as toast to avoid spamming the user
+    if (error.message !== 'Network Error') {
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive'
+      });
+    }
     
     // Handle 401 Unauthorized errors (token expired or invalid)
     if (error.response?.status === 401) {
@@ -45,11 +49,16 @@ api.interceptors.response.use(
 // Auth service
 export const authService = {
   register: async (userData: { name: string, email: string, password: string }) => {
-    const response = await api.post('/auth/register', userData);
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
+    try {
+      const response = await api.post('/auth/register', userData);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
     }
-    return response.data;
   },
   
   login: async (credentials: { email: string, password: string }) => {
