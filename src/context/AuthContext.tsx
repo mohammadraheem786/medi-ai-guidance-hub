@@ -19,21 +19,24 @@ interface AuthContextType {
   isAuthenticated: boolean;
 }
 
+// Create context with a default undefined value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
+// Custom hook to use the auth context
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-};
+}
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+// Export AuthProvider as a named function component
+export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -80,6 +83,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         email: response.user.email
       });
       
+      // Store the token in localStorage
+      localStorage.setItem("token", response.token);
+      
       toast({
         title: "Login Successful",
         description: `Welcome back, ${response.user.name}!`,
@@ -105,6 +111,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         name: response.user.name,
         email: response.user.email
       });
+      
+      // Store the token in localStorage
+      localStorage.setItem("token", response.token);
       
       toast({
         title: "Registration Successful",
@@ -141,4 +150,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+}
