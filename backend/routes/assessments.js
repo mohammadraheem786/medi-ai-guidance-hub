@@ -9,4 +9,14 @@ const auth = require('../middleware/auth');
 // @access  Private
 router.post('/', auth, assessmentController.submitAssessment);
 
+// @route   GET api/assessments
+// @desc    Get user's assessment history
+// @access  Private
+router.get('/', auth, assessmentController.getUserAssessments);
+
+// @route   GET api/assessments/:id
+// @desc    Get assessment by ID
+// @access  Private
+router.get('/:id', auth, assessmentController.getAssessmentById);
+
 module.exports = router;

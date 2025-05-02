@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/context/AuthContext';
 import { Loader } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -40,8 +41,8 @@ const Login = () => {
     try {
       await login(values.email, values.password);
       navigate('/dashboard');
-    } catch (err) {
-      setError('Invalid email or password. Please try again.');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -60,83 +61,94 @@ const Login = () => {
   }
 
   return (
-    <div className="pt-20 min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      transition={{ duration: 0.5 }}
+      className="pt-20 min-h-screen flex items-center justify-center bg-gray-50 px-4"
+    >
       <div className="w-full max-w-md">
-        <Card className="shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">
-              <span className="medical-text-gradient">Sign in to MediAI</span>
-            </CardTitle>
-            <CardDescription className="text-center">
-              Enter your email and password to access your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {error && (
-              <Alert variant="destructive" className="mb-4">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Enter your email" 
-                          type="email" 
-                          {...field} 
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Enter your password" 
-                          type="password" 
-                          {...field} 
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button 
-                  type="submit" 
-                  className="w-full bg-medical-500 hover:bg-medical-600" 
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? <Loader className="animate-spin mr-2" size={16} /> : null}
-                  {isSubmitting ? 'Signing in...' : 'Sign in'}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-2 text-center">
-            <div className="text-sm">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-medical-600 hover:underline">
-                Register
-              </Link>
-            </div>
-          </CardFooter>
-        </Card>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <Card className="shadow-lg">
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl font-bold text-center">
+                <span className="medical-text-gradient">Sign in to MediAI</span>
+              </CardTitle>
+              <CardDescription className="text-center">
+                Enter your email and password to access your account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter your email" 
+                            type="email" 
+                            {...field} 
+                            disabled={isSubmitting}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter your password" 
+                            type="password" 
+                            {...field} 
+                            disabled={isSubmitting}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-medical-500 hover:bg-medical-600" 
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? <Loader className="animate-spin mr-2" size={16} /> : null}
+                    {isSubmitting ? 'Signing in...' : 'Sign in'}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-2 text-center">
+              <div className="text-sm">
+                Don't have an account?{' '}
+                <Link to="/register" className="text-medical-600 hover:underline">
+                  Register
+                </Link>
+              </div>
+            </CardFooter>
+          </Card>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

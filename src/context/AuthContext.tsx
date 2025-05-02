@@ -1,8 +1,11 @@
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
+import { authService } from "@/services/api";
+import { toast } from "@/components/ui/use-toast";
 
 interface User {
   id: string;
+  name: string;
   email: string;
 }
 
@@ -11,7 +14,7 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -37,46 +40,50 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Initialize auth state from localStorage
   useEffect(() => {
-    const storedToken = localStorage.getItem("mediAI-token");
-    const storedUser = localStorage.getItem("mediAI-user");
+    const storedToken = localStorage.getItem("token");
     
-    if (storedToken && storedUser) {
+    if (storedToken) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      
+      // Fetch current user
+      authService.getCurrentUser()
+        .then(response => {
+          setUser({
+            id: response.data._id,
+            name: response.data.name,
+            email: response.data.email
+          });
+        })
+        .catch(() => {
+          // If token is invalid, remove it
+          localStorage.removeItem("token");
+          setToken(null);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   }, []);
 
-  // Mock login function - in a real app, this would call an API
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await authService.login({ email, password });
       
-      // Mock validation
-      if (!email.includes('@') || password.length < 6) {
-        throw new Error("Invalid credentials");
-      }
+      setToken(response.token);
+      setUser({
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email
+      });
       
-      // Generate mock JWT token (in real app would come from server)
-      const mockToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(
-        JSON.stringify({ email, id: Date.now().toString() })
-      )}.mockSignature`;
-      
-      const userData = {
-        id: Date.now().toString(),
-        email
-      };
-
-      setUser(userData);
-      setToken(mockToken);
-      
-      // Store in localStorage
-      localStorage.setItem("mediAI-token", mockToken);
-      localStorage.setItem("mediAI-user", JSON.stringify(userData));
+      toast({
+        title: "Login Successful",
+        description: `Welcome back, ${response.user.name}!`,
+      });
       
     } catch (error) {
       console.error("Login error:", error);
@@ -86,35 +93,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  // Mock register function
-  const register = async (email: string, password: string) => {
+  const register = async (name: string, email: string, password: string) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await authService.register({ name, email, password });
       
-      // Mock validation
-      if (!email.includes('@') || password.length < 6) {
-        throw new Error("Invalid credentials");
-      }
+      setToken(response.token);
+      setUser({
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email
+      });
       
-      // Generate mock JWT token
-      const mockToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(
-        JSON.stringify({ email, id: Date.now().toString() })
-      )}.mockSignature`;
-      
-      const userData = {
-        id: Date.now().toString(),
-        email
-      };
-
-      setUser(userData);
-      setToken(mockToken);
-      
-      // Store in localStorage
-      localStorage.setItem("mediAI-token", mockToken);
-      localStorage.setItem("mediAI-user", JSON.stringify(userData));
+      toast({
+        title: "Registration Successful",
+        description: `Welcome to MediAI, ${response.user.name}!`,
+      });
       
     } catch (error) {
       console.error("Registration error:", error);
@@ -124,12 +119,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  // Logout function
   const logout = () => {
+    authService.logout();
     setUser(null);
     setToken(null);
-    localStorage.removeItem("mediAI-token");
-    localStorage.removeItem("mediAI-user");
+    
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
   };
 
   const value = {

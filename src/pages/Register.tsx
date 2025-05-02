@@ -11,8 +11,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/context/AuthContext';
 import { Loader } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const formSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters long' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters long' }),
   confirmPassword: z.string().min(6, { message: 'Password must be at least 6 characters long' }),
@@ -25,13 +27,14 @@ type FormValues = z.infer<typeof formSchema>;
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register, isAuthenticated, isLoading } = useAuth();
+  const { register: registerUser, isAuthenticated, isLoading } = useAuth();
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -43,10 +46,10 @@ const Register = () => {
     setIsSubmitting(true);
     
     try {
-      await register(values.email, values.password);
+      await registerUser(values.name, values.email, values.password);
       navigate('/dashboard');
-    } catch (err) {
-      setError('Registration failed. Please try again with a different email.');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -65,101 +68,130 @@ const Register = () => {
   }
 
   return (
-    <div className="pt-20 min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      transition={{ duration: 0.5 }}
+      className="pt-20 min-h-screen flex items-center justify-center bg-gray-50 px-4"
+    >
       <div className="w-full max-w-md">
-        <Card className="shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">
-              <span className="medical-text-gradient">Create your MediAI account</span>
-            </CardTitle>
-            <CardDescription className="text-center">
-              Enter your details to create an account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {error && (
-              <Alert variant="destructive" className="mb-4">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Enter your email" 
-                          type="email" 
-                          {...field} 
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Create a password" 
-                          type="password" 
-                          {...field} 
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Confirm your password" 
-                          type="password" 
-                          {...field} 
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button 
-                  type="submit" 
-                  className="w-full bg-medical-500 hover:bg-medical-600" 
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? <Loader className="animate-spin mr-2" size={16} /> : null}
-                  {isSubmitting ? 'Creating account...' : 'Create account'}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-2 text-center">
-            <div className="text-sm">
-              Already have an account?{' '}
-              <Link to="/login" className="text-medical-600 hover:underline">
-                Sign in
-              </Link>
-            </div>
-          </CardFooter>
-        </Card>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <Card className="shadow-lg">
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl font-bold text-center">
+                <span className="medical-text-gradient">Create your MediAI account</span>
+              </CardTitle>
+              <CardDescription className="text-center">
+                Enter your details to create an account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter your full name" 
+                            type="text" 
+                            {...field} 
+                            disabled={isSubmitting}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter your email" 
+                            type="email" 
+                            {...field} 
+                            disabled={isSubmitting}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Create a password" 
+                            type="password" 
+                            {...field} 
+                            disabled={isSubmitting}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Confirm your password" 
+                            type="password" 
+                            {...field} 
+                            disabled={isSubmitting}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-medical-500 hover:bg-medical-600" 
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? <Loader className="animate-spin mr-2" size={16} /> : null}
+                    {isSubmitting ? 'Creating account...' : 'Create account'}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-2 text-center">
+              <div className="text-sm">
+                Already have an account?{' '}
+                <Link to="/login" className="text-medical-600 hover:underline">
+                  Sign in
+                </Link>
+              </div>
+            </CardFooter>
+          </Card>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
