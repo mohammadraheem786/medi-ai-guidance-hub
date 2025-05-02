@@ -150,67 +150,68 @@ const Hero = () => {
                 }}
               />
               
-              {/* Main content */}
-              <div className="relative">
-                <motion.div 
-                  className="w-full h-full bg-gradient-to-tr from-medical-400 to-teal-400 dark:from-medical-500 dark:to-teal-500 rounded-3xl shadow-2xl p-1"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 h-full">
-                    <div className="space-y-6">
-                      <motion.div 
-                        className="h-6 bg-gray-100 dark:bg-gray-700 rounded w-3/4"
-                        whileHover={{ width: "85%" }}
-                      />
-                      <div className="space-y-3">
-                        <motion.div 
-                          className="h-4 bg-gray-100 dark:bg-gray-700 rounded"
-                          whileHover={{ width: "95%" }}
-                        />
-                        <motion.div 
-                          className="h-4 bg-gray-100 dark:bg-gray-700 rounded"
-                          whileHover={{ width: "90%" }}
-                        />
-                        <motion.div 
-                          className="h-4 bg-gray-100 dark:bg-gray-700 rounded"
-                          whileHover={{ width: "85%" }}
-                        />
+              {/* Main content - Updated to show project information */}
+              <motion.div 
+                className="relative z-10"
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 border border-gray-100 dark:border-gray-700">
+                  <motion.h3 
+                    className="text-xl font-bold mb-4 text-medical-600 dark:text-medical-400"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    About MediAI
+                  </motion.h3>
+                  
+                  <motion.div 
+                    className="space-y-4 text-sm text-gray-600 dark:text-gray-300"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <p>
+                      MediAI is an advanced, AI-powered platform revolutionizing healthcare by 
+                      enhancing diagnostic accuracy, streamlining clinical workflows, and enabling 
+                      personalized patient care.
+                    </p>
+                    
+                    <p>
+                      By leveraging cutting-edge machine learning algorithms, natural language 
+                      processing, and real-time data analytics, MediAI supports medical professionals 
+                      in making informed decisions.
+                    </p>
+                    
+                    <p>
+                      The system integrates with electronic health records, medical imaging tools, 
+                      and wearable health devices to provide a comprehensive, data-driven approach 
+                      to healthcare delivery.
+                    </p>
+                    
+                    <motion.div 
+                      className="pt-4 border-t border-gray-100 dark:border-gray-700 mt-4"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.9 }}
+                    >
+                      <div className="flex items-center gap-2 text-medical-500 dark:text-medical-400 font-semibold">
+                        <div className="w-2 h-2 bg-medical-500 dark:bg-medical-400 rounded-full"></div>
+                        Diagnostic Accuracy
                       </div>
-                      <motion.div 
-                        className="h-10 bg-medical-100 dark:bg-gray-700 rounded-lg w-full" 
-                        whileHover={{ backgroundColor: "#a5f3fc" }}
-                      />
-                      <div className="space-y-3">
-                        <div className="grid grid-cols-3 gap-2">
-                          <motion.div 
-                            className="h-16 bg-teal-50 dark:bg-teal-900/30 rounded-lg flex items-center justify-center"
-                            whileHover={{ scale: 1.05, backgroundColor: "#a5f3fc" }}
-                          >
-                            <div className="h-8 w-8 rounded-full bg-teal-100 dark:bg-teal-700" />
-                          </motion.div>
-                          <motion.div 
-                            className="h-16 bg-purple-50 dark:bg-purple-900/30 rounded-lg flex items-center justify-center"
-                            whileHover={{ scale: 1.05, backgroundColor: "#ddd6fe" }}
-                          >
-                            <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-700" />
-                          </motion.div>
-                          <motion.div 
-                            className="h-16 bg-medical-50 dark:bg-medical-900/30 rounded-lg flex items-center justify-center"
-                            whileHover={{ scale: 1.05, backgroundColor: "#a5f3fc" }}
-                          >
-                            <div className="h-8 w-8 rounded-full bg-medical-100 dark:bg-medical-700" />
-                          </motion.div>
-                        </div>
+                      <div className="flex items-center gap-2 text-purple-500 dark:text-purple-400 font-semibold mt-2">
+                        <div className="w-2 h-2 bg-purple-500 dark:bg-purple-400 rounded-full"></div>
+                        Clinical Workflow Optimization
                       </div>
-                      <motion.div 
-                        className="h-10 bg-medical-500 dark:bg-medical-600 rounded-lg w-full"
-                        whileHover={{ scale: 1.02 }}
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
+                      <div className="flex items-center gap-2 text-teal-500 dark:text-teal-400 font-semibold mt-2">
+                        <div className="w-2 h-2 bg-teal-500 dark:bg-teal-400 rounded-full"></div>
+                        Personalized Patient Care
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         </motion.div>
