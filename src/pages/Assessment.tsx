@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -130,7 +129,7 @@ const Assessment = () => {
                     <CardTitle className="text-xl">{result.title}</CardTitle>
                     <CardDescription className="mt-1">{result.description}</CardDescription>
                   </div>
-                  <Badge className={getSeverityColor(result.severity)} className="text-sm px-3 py-1">
+                  <Badge className={getSeverityColor(result.severity)}>
                     {result.severity === 'high' ? 'High Risk' : 
                      result.severity === 'medium' ? 'Medium Risk' : 'Low Risk'}
                   </Badge>

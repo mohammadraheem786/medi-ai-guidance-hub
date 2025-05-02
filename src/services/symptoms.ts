@@ -111,7 +111,7 @@ const conditionDatabase = [
       'Rest and stay hydrated',
       'Take fever-reducing medication',
       'Use antiviral medication if prescribed',
-      'Seek medical attention if symptoms are severe or you're in a high-risk group'
+      'Seek medical attention if symptoms are severe or you\'re in a high-risk group'
     ],
   },
   {
