@@ -89,7 +89,7 @@ const allHealthTips = [
     importance: 'low' as const,
     tips: [
       'Eat slowly and without distractions.',
-      'Pay attention to flavors, textures, and your body's signals.',
+      'Pay attention to flavors, textures, and your body\'s signals.',
       'Avoid eating when stressed or emotional.',
       'Appreciate and enjoy your food.'
     ],
@@ -151,7 +151,7 @@ const allHealthTips = [
       'Schedule annual physical exams with your doctor.',
       'Keep up with recommended screenings for your age and risk factors.',
       'Stay current on immunizations.',
-      'Don't ignore new or concerning symptoms.'
+      'Don\'t ignore new or concerning symptoms.'
     ],
     source: 'American Academy of Family Physicians'
   },

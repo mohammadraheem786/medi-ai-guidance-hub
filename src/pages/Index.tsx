@@ -34,7 +34,7 @@ const Index = () => {
     {
       step: '02',
       title: 'Enter Your Symptoms',
-      description: 'Select from our comprehensive list of symptoms to describe what you're experiencing.',
+      description: 'Select from our comprehensive list of symptoms to describe what you\'re experiencing.',
     },
     {
       step: '03',
