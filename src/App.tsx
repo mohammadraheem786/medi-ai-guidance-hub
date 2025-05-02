@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -24,29 +25,33 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/about" element={<About />} />
-              
-              {/* Protected Routes */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/symptom" element={<SymptomPage />} />
-                <Route path="/assessment" element={<Assessment />} />
-                <Route path="/health-tips" element={<HealthTips />} />
-              </Route>
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Navbar />
+              <div className="pt-16 min-h-screen bg-background transition-colors duration-300">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/about" element={<About />} />
+                  
+                  {/* Protected Routes */}
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/symptom" element={<SymptomPage />} />
+                    <Route path="/assessment" element={<Assessment />} />
+                    <Route path="/health-tips" element={<HealthTips />} />
+                  </Route>
+                  
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

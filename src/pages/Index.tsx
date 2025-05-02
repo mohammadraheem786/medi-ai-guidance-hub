@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Hero from '@/components/Hero';
+import { motion } from 'framer-motion';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -48,86 +49,172 @@ const Index = () => {
     },
   ];
 
+  const cardVariants = {
+    offscreen: { y: 50, opacity: 0 },
+    onscreen: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        bounce: 0.4,
+        duration: 0.8
+      }
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
   return (
     <>
       <Hero />
       
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">How MediAI Helps You</h2>
-            <p className="text-gray-600">
+          <motion.div 
+            className="max-w-3xl mx-auto text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">How MediAI Helps You</h2>
+            <p className="text-gray-600 dark:text-gray-300">
               Our intelligent health platform is designed to provide guidance when you need it most.
             </p>
-          </div>
+          </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {features.map((feature, index) => (
-              <Card key={index} className="border border-gray-200 hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle>{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-gray-600 min-h-[80px]">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    onClick={feature.action}
-                    className="w-full bg-medical-500 hover:bg-medical-600"
-                  >
-                    Learn More
-                  </Button>
-                </CardFooter>
-              </Card>
+              <motion.div
+                key={index}
+                variants={cardVariants}
+                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+              >
+                <Card className="border border-gray-200 dark:border-gray-700 hover:shadow-md dark:shadow-gray-900/20 transition-all duration-300 bg-white dark:bg-gray-800 h-full">
+                  <CardHeader>
+                    <CardTitle className="dark:text-white">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 dark:text-gray-300 min-h-[80px]">
+                      {feature.description}
+                    </CardDescription>
+                  </CardContent>
+                  <CardFooter>
+                    <Button 
+                      onClick={feature.action}
+                      className="w-full bg-medical-500 hover:bg-medical-600 dark:bg-medical-600 dark:hover:bg-medical-700"
+                    >
+                      Learn More
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
       
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">How It Works</h2>
-            <p className="text-gray-600">
+          <motion.div 
+            className="max-w-3xl mx-auto text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">How It Works</h2>
+            <p className="text-gray-600 dark:text-gray-300">
               MediAI provides a simple, step-by-step process to help you understand your health concerns
             </p>
-          </div>
+          </motion.div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {howItWorks.map((item, index) => (
-              <div key={index} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="text-2xl font-bold text-medical-500 mb-3">{item.step}</div>
-                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.description}</p>
-              </div>
+              <motion.div 
+                key={index} 
+                className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:shadow-gray-900/20 hover:shadow-md dark:hover:shadow-gray-900/40 transition-all"
+                variants={cardVariants}
+                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+              >
+                <div className="text-2xl font-bold text-medical-500 dark:text-medical-400 mb-3">{item.step}</div>
+                <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{item.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{item.description}</p>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
           
-          <div className="text-center mt-12">
+          <motion.div 
+            className="text-center mt-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
             <Button 
               onClick={() => navigate('/register')}
               size="lg" 
-              className="bg-medical-500 hover:bg-medical-600"
+              className="bg-medical-500 hover:bg-medical-600 dark:bg-medical-600 dark:hover:bg-medical-700"
             >
               Get Started Now
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
       
-      <section className="py-16 bg-medical-500 text-white">
+      <section className="py-16 bg-gradient-to-r from-medical-500 to-teal-500 dark:from-medical-600 dark:to-teal-600 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to take control of your health?</h2>
-          <p className="text-white/90 max-w-2xl mx-auto mb-8">
+          <motion.h2 
+            className="text-3xl font-bold mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Ready to take control of your health?
+          </motion.h2>
+          <motion.p 
+            className="text-white/90 max-w-2xl mx-auto mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
             Join thousands of users who rely on MediAI for health guidance and personalized recommendations.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          </motion.p>
+          <motion.div 
+            className="flex flex-col sm:flex-row justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
             <Button 
               onClick={() => navigate('/register')} 
               size="lg"
               variant="secondary"
+              className="hover-scale"
             >
               Sign Up - It's Free
             </Button>
@@ -135,33 +222,62 @@ const Index = () => {
               onClick={() => navigate('/about')}
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white/10"
+              className="border-white text-white hover:bg-white/10 hover-scale"
             >
               Learn More
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
       
-      <footer className="bg-gray-900 text-white py-12">
+      <motion.footer 
+        className="bg-gray-900 text-white py-12"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        viewport={{ once: true }}
+      >
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
-            <h2 className="text-2xl font-bold mb-6">MediAI</h2>
+            <motion.h2 
+              className="text-2xl font-bold mb-6"
+              whileHover={{ scale: 1.05 }}
+            >
+              MediAI
+            </motion.h2>
             <p className="text-gray-400 text-center max-w-lg mb-6">
               MediAI provides informational health guidance only and is not a substitute for professional medical advice, 
               diagnosis, or treatment. Always consult qualified healthcare providers.
             </p>
-            <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-white">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white">Contact</a>
+            <div className="flex flex-wrap space-x-6 justify-center">
+              <motion.a 
+                href="#" 
+                className="text-gray-400 hover:text-white transition-colors"
+                whileHover={{ y: -2, scale: 1.05 }}
+              >
+                Terms of Service
+              </motion.a>
+              <motion.a 
+                href="#" 
+                className="text-gray-400 hover:text-white transition-colors"
+                whileHover={{ y: -2, scale: 1.05 }}
+              >
+                Privacy Policy
+              </motion.a>
+              <motion.a 
+                href="#" 
+                className="text-gray-400 hover:text-white transition-colors"
+                whileHover={{ y: -2, scale: 1.05 }}
+              >
+                Contact
+              </motion.a>
             </div>
             <div className="mt-8 text-gray-500 text-sm">
               &copy; {new Date().getFullYear()} MediAI. All rights reserved.
             </div>
           </div>
         </div>
-      </footer>
+      </motion.footer>
     </>
   );
 };
