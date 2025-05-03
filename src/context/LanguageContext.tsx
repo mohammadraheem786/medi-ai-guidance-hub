@@ -64,6 +64,7 @@ export const translations = {
     "footer.link.1": "Terms of Service",
     "footer.link.2": "Privacy Policy",
     "footer.link.3": "Contact",
+    "footer.copyright": "© {year} MediAI. All rights reserved.",
     
     // Navigation
     "nav.home": "Home",
@@ -84,8 +85,46 @@ export const translations = {
     
     // Language selector
     "language.english": "English",
-    "language.hindi": "हिन्दी",
-    "language.telugu": "తెలుగు",
+    "language.hindi": "Hindi",
+    "language.telugu": "Telugu",
+    
+    // Theme
+    "theme.toggle": "Toggle theme",
+    "theme.lightMode": "Switch to light mode",
+    "theme.darkMode": "Switch to dark mode",
+    
+    // Loading states
+    "loading.general": "Loading...",
+    "loading.analysis": "Analyzing your symptoms...",
+    "loading.data": "Fetching data...",
+    "loading.login": "Logging in...",
+    "loading.register": "Creating your account...",
+    
+    // Auth forms
+    "auth.login.title": "Welcome back",
+    "auth.login.subtitle": "Log in to your account",
+    "auth.login.email": "Email",
+    "auth.login.password": "Password",
+    "auth.login.button": "Log in",
+    "auth.login.forgot": "Forgot password?",
+    "auth.login.noAccount": "Don't have an account?",
+    "auth.login.register": "Sign up",
+    
+    "auth.register.title": "Create an account",
+    "auth.register.subtitle": "Sign up to get started",
+    "auth.register.name": "Full Name",
+    "auth.register.email": "Email",
+    "auth.register.password": "Password",
+    "auth.register.confirmPassword": "Confirm Password",
+    "auth.register.button": "Sign up",
+    "auth.register.hasAccount": "Already have an account?",
+    "auth.register.login": "Log in",
+    
+    // Errors
+    "error.general": "Something went wrong. Please try again.",
+    "error.network": "Network error. Please check your connection.",
+    "error.auth": "Authentication failed. Please check your credentials.",
+    "error.notFound": "Page not found",
   },
   hi: {
     // Hero section
@@ -139,6 +178,7 @@ export const translations = {
     "footer.link.1": "सेवा की शर्तें",
     "footer.link.2": "गोपनीयता नीति",
     "footer.link.3": "संपर्क",
+    "footer.copyright": "© {year} मेडिएआई। सर्वाधिकार सुरक्षित।",
     
     // Navigation
     "nav.home": "होम",
@@ -158,9 +198,47 @@ export const translations = {
     "symptom.form.error": "कृपया कम से कम एक लक्षण चुनें",
     
     // Language selector
-    "language.english": "English",
+    "language.english": "अंग्रेज़ी",
     "language.hindi": "हिन्दी",
-    "language.telugu": "తెలుగు",
+    "language.telugu": "तेलुगु",
+    
+    // Theme
+    "theme.toggle": "थीम बदलें",
+    "theme.lightMode": "लाइट मोड पर स्विच करें",
+    "theme.darkMode": "डार्क मोड पर स्विच करें",
+    
+    // Loading states
+    "loading.general": "लोड हो रहा है...",
+    "loading.analysis": "आपके लक्षणों का विश्लेषण किया जा रहा है...",
+    "loading.data": "डेटा प्राप्त किया जा रहा है...",
+    "loading.login": "लॉग इन हो रहा है...",
+    "loading.register": "आपका खाता बनाया जा रहा है...",
+    
+    // Auth forms
+    "auth.login.title": "वापसी पर स्वागत है",
+    "auth.login.subtitle": "अपने खाते में लॉग इन करें",
+    "auth.login.email": "ईमेल",
+    "auth.login.password": "पासवर्ड",
+    "auth.login.button": "लॉग इन",
+    "auth.login.forgot": "पासवर्ड भूल गए?",
+    "auth.login.noAccount": "खाता नहीं है?",
+    "auth.login.register": "साइन अप करें",
+    
+    "auth.register.title": "खाता बनाएं",
+    "auth.register.subtitle": "आरंभ करने के लिए साइन अप करें",
+    "auth.register.name": "पूरा नाम",
+    "auth.register.email": "ईमेल",
+    "auth.register.password": "पासवर्ड",
+    "auth.register.confirmPassword": "पासवर्ड की पुष्टि करें",
+    "auth.register.button": "साइन अप",
+    "auth.register.hasAccount": "पहले से खाता है?",
+    "auth.register.login": "लॉग इन करें",
+    
+    // Errors
+    "error.general": "कुछ गलत हो गया। कृपया पुन: प्रयास करें।",
+    "error.network": "नेटवर्क त्रुटि। कृपया अपने कनेक्शन की जांच करें।",
+    "error.auth": "प्रमाणीकरण विफल हुआ। कृपया अपने क्रेडेंशियल्स की जांच करें।",
+    "error.notFound": "पृष्ठ नहीं मिला",
   },
   te: {
     // Hero section
@@ -214,6 +292,7 @@ export const translations = {
     "footer.link.1": "సేవా నిబంధనలు",
     "footer.link.2": "గోప్యతా విధానం",
     "footer.link.3": "సంప్రదించండి",
+    "footer.copyright": "© {year} మెడిఎయ్. అన్ని హక్కులు రిజర్వ్ చేయబడ్డాయి.",
     
     // Navigation
     "nav.home": "హోమ్",
@@ -233,35 +312,101 @@ export const translations = {
     "symptom.form.error": "దయచేసి కనీసం ఒక లక్షణాన్ని ఎంచుకోండి",
     
     // Language selector
-    "language.english": "English",
-    "language.hindi": "हिन्दी",
+    "language.english": "ఇంగ్లీష్",
+    "language.hindi": "హిందీ",
     "language.telugu": "తెలుగు",
+    
+    // Theme
+    "theme.toggle": "థీమ్ మార్చండి",
+    "theme.lightMode": "లైట్ మోడ్‌కి మార్చండి",
+    "theme.darkMode": "డార్క్ మోడ్‌కి మార్చండి",
+    
+    // Loading states
+    "loading.general": "లోడ్ అవుతోంది...",
+    "loading.analysis": "మీ లక్షణాలను విశ్లేషిస్తున్నాము...",
+    "loading.data": "డేటా పొందుతోంది...",
+    "loading.login": "లాగిన్ అవుతోంది...",
+    "loading.register": "మీ ఖాతా సృష్టించబడుతోంది...",
+    
+    // Auth forms
+    "auth.login.title": "తిరిగి స్వాగతం",
+    "auth.login.subtitle": "మీ ఖాతాకు లాగిన్ చేయండి",
+    "auth.login.email": "ఇమెయిల్",
+    "auth.login.password": "పాస్‌వర్డ్",
+    "auth.login.button": "లాగిన్",
+    "auth.login.forgot": "పాస్‌వర్డ్ మర్చిపోయారా?",
+    "auth.login.noAccount": "ఖాతా లేదా?",
+    "auth.login.register": "సైన్ అప్ చేయండి",
+    
+    "auth.register.title": "ఖాతాను సృష్టించండి",
+    "auth.register.subtitle": "ప్రారంభించడానికి సైన్ అప్ చేయండి",
+    "auth.register.name": "పూర్తి పేరు",
+    "auth.register.email": "ఇమెయిల్",
+    "auth.register.password": "పాస్‌వర్డ్",
+    "auth.register.confirmPassword": "పాస్‌వర్డ్ నిర్ధారించండి",
+    "auth.register.button": "సైన్ అప్",
+    "auth.register.hasAccount": "ఇప్పటికే ఖాతా ఉందా?",
+    "auth.register.login": "లాగిన్",
+    
+    // Errors
+    "error.general": "ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి.",
+    "error.network": "నెట్‌వర్క్ లోపం. దయచేసి మీ కనెక్షన్‌ని తనిఖీ చేయండి.",
+    "error.auth": "ప్రమాణీకరణ విఫలమైంది. దయచేసి మీ ఆధారాలను తనిఖీ చేయండి.",
+    "error.notFound": "పేజీ కనబడలేదు",
   }
 };
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('en');
-
-  useEffect(() => {
+  const [language, setLanguageState] = useState<Language>(() => {
     // Load language preference from localStorage on component mount
     const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage && ['en', 'hi', 'te'].includes(savedLanguage)) {
-      setLanguageState(savedLanguage);
+      return savedLanguage;
     }
-  }, []);
+    
+    // Try to detect browser language
+    const browserLang = navigator.language.split('-')[0];
+    if (browserLang === 'hi') return 'hi';
+    if (browserLang === 'te') return 'te';
+    
+    // Default to English
+    return 'en';
+  });
 
-  // Function to set language and save to localStorage
+  useEffect(() => {
+    // Set language preference in localStorage on change
+    localStorage.setItem('language', language);
+    
+    // Update HTML lang attribute for accessibility
+    document.documentElement.lang = language;
+    
+    // Apply RTL direction if needed (not needed for these languages)
+    // if (['ar', 'he', 'fa', 'ur'].includes(language)) {
+    //   document.documentElement.dir = 'rtl';
+    // } else {
+    //   document.documentElement.dir = 'ltr';
+    // }
+  }, [language]);
+
+  // Function to set language
   const setLanguage = (newLang: Language) => {
     setLanguageState(newLang);
-    localStorage.setItem('language', newLang);
-    // Update HTML lang attribute for accessibility
-    document.documentElement.lang = newLang;
   };
 
-  // Function to translate key
-  const translate = (key: string): string => {
+  // Function to translate key with variable replacement
+  const translate = (key: string, variables?: Record<string, string>): string => {
     const langData = translations[language];
-    return langData[key] || key;
+    let result = langData[key] || key;
+    
+    // Replace variables if provided
+    if (variables) {
+      Object.entries(variables).forEach(([varName, varValue]) => {
+        result = result.replace(`{${varName}}`, varValue);
+      });
+    }
+    
+    // Special case for year replacement 
+    return result.replace('{year}', new Date().getFullYear().toString());
   };
 
   return (

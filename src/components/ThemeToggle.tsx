@@ -3,9 +3,11 @@ import { useTheme } from "@/context/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
+  const { translate } = useLanguage();
   
   return (
     <Button
@@ -13,7 +15,8 @@ const ThemeToggle = () => {
       size="icon"
       onClick={toggleTheme}
       className="rounded-full"
-      aria-label="Toggle theme"
+      aria-label={translate("theme.toggle")}
+      title={theme === "dark" ? translate("theme.lightMode") : translate("theme.darkMode")}
     >
       <motion.div
         initial={{ opacity: 0 }}

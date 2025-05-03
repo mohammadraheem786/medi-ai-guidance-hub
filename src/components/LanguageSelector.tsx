@@ -8,17 +8,23 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
-import { Globe } from "lucide-react";
+import { Globe, Languages } from "lucide-react";
 
 const LanguageSelector = () => {
   const { language, setLanguage, translate } = useLanguage();
 
+  const languageNames = {
+    en: "English",
+    hi: "हिन्दी",
+    te: "తెలుగు"
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="flex gap-1 items-center">
-          <Globe className="h-4 w-4" />
-          <span>{language.toUpperCase()}</span>
+        <Button variant="outline" size="sm" className="flex gap-1.5 items-center">
+          <Languages className="h-4 w-4" />
+          <span>{languageNames[language]}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800">
