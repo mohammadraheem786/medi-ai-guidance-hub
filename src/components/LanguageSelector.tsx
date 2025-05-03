@@ -38,7 +38,7 @@ const LanguageSelector = () => {
             className="flex items-center"
           >
             {language === 'en' && <span className="mr-2">✓</span>}
-            {translate("language.english")}
+            {translate("language.english", "English")}
           </motion.div>
         </DropdownMenuItem>
         <DropdownMenuItem 
@@ -51,7 +51,7 @@ const LanguageSelector = () => {
             className="flex items-center"
           >
             {language === 'hi' && <span className="mr-2">✓</span>}
-            {translate("language.hindi")}
+            {translate("language.hindi", "हिन्दी")}
           </motion.div>
         </DropdownMenuItem>
         <DropdownMenuItem 
@@ -64,7 +64,7 @@ const LanguageSelector = () => {
             className="flex items-center"
           >
             {language === 'te' && <span className="mr-2">✓</span>}
-            {translate("language.telugu")}
+            {translate("language.telugu", "తెలుగు")}
           </motion.div>
         </DropdownMenuItem>
       </DropdownMenuContent>
