@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/context/ThemeContext';
@@ -64,6 +65,9 @@ const Navbar = () => {
             </Link>
             <Link to="/about" className="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-medical-600 dark:hover:text-medical-400 transition-colors">
               {translate("nav.about")}
+            </Link>
+            <Link to="/doctors" className="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-medical-600 dark:hover:text-medical-400 transition-colors">
+              {translate("nav.doctors")}
             </Link>
             {isAuthenticated && (
               <Link to="/dashboard" className="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-medical-600 dark:hover:text-medical-400 transition-colors">
@@ -145,6 +149,13 @@ const Navbar = () => {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               {translate("nav.about")}
+            </Link>
+            <Link
+              to="/doctors"
+              onClick={closeMobileMenu}
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              {translate("nav.doctors")}
             </Link>
             {isAuthenticated && (
               <Link

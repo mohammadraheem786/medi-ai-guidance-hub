@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/AuthContext";
-import { ThemeProvider } from "@/context/ThemeContext";
+import { ThemeProvider } from "@/context/ThemeProvider";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Loader from "@/components/ui/loader";
 
@@ -17,6 +17,7 @@ import SymptomPage from "./pages/SymptomPage";
 import Assessment from "./pages/Assessment";
 import HealthTips from "./pages/HealthTips";
 import About from "./pages/About";
+import Doctors from "./pages/Doctors";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -46,6 +47,7 @@ function App() {
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
                       <Route path="/about" element={<About />} />
+                      <Route path="/doctors" element={<Doctors />} />
                       
                       {/* Protected Routes */}
                       <Route element={<ProtectedRoute />}>
