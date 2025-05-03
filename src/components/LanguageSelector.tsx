@@ -8,15 +8,15 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
-import { Globe, Languages } from "lucide-react";
+import { Languages } from "lucide-react";
 
 const LanguageSelector = () => {
   const { language, setLanguage, translate } = useLanguage();
 
   const languageNames = {
-    en: "English",
-    hi: "हिन्दी",
-    te: "తెలుగు"
+    en: translate("language.english", "English"),
+    hi: translate("language.hindi", "हिन्दी"),
+    te: translate("language.telugu", "తెలుగు")
   };
 
   return (
