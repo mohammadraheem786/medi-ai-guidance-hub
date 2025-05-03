@@ -17,11 +17,8 @@ const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters long' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters long' }),
-  confirmPassword: z.string().min(6, { message: 'Password must be at least 6 characters long' }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+  
+})
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -36,8 +33,7 @@ const Register = () => {
     defaultValues: {
       name: '',
       email: '',
-      password: '',
-      confirmPassword: '',
+      password: ''
     },
   });
 
@@ -48,8 +44,8 @@ const Register = () => {
     try {
       await registerUser(values.name, values.email, values.password);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please check your connection and try again.');
+    } catch (err) {
+      console.log('Registration error:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -144,25 +140,6 @@ const Register = () => {
                         <FormControl>
                           <Input 
                             placeholder="Create a password" 
-                            type="password" 
-                            {...field} 
-                            disabled={isSubmitting}
-                            className="bg-white dark:bg-gray-800"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="Confirm your password" 
                             type="password" 
                             {...field} 
                             disabled={isSubmitting}

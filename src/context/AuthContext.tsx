@@ -125,7 +125,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         description: `Welcome to MediAI, ${name}!`,
       });
       
-    } catch (error: any) {
+    } catch (error) {
       console.error("Registration error:", error);
       const errorMsg = error.response?.data?.message || "Registration failed. Please try again.";
       toast({

@@ -4,7 +4,7 @@ import { toast } from '@/components/ui/use-toast';
 // Create axios instance with base URL
 // Using relative URL to make it work in both development and production
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://localhost:5000/api/', // Replace with your actual base URL
 });
 
 // Add a request interceptor to add auth token
