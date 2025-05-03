@@ -2,11 +2,13 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
 
 const Hero = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { translate } = useLanguage();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -47,18 +49,16 @@ const Hero = () => {
               className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl"
               variants={itemVariants}
             >
-              <span className="block xl:inline">Your AI-powered</span>{' '}
+              <span className="block xl:inline">{translate("hero.title")}</span>{' '}
               <span className="block medical-text-gradient xl:inline">
-                health assistant
+                {translate("hero.subtitle")}
               </span>
             </motion.h1>
             <motion.p 
               className="mt-4 text-base text-gray-500 dark:text-gray-300 sm:mt-5 sm:text-lg sm:max-w-xl"
               variants={itemVariants}
             >
-              MediAI helps you analyze symptoms, assess severity, 
-              and get personalized health guidance. Your health matters, 
-              and we're here to help you understand it better.
+              {translate("hero.description")}
             </motion.p>
             <motion.div 
               className="mt-8 sm:mt-10"
@@ -70,14 +70,14 @@ const Hero = () => {
                     onClick={() => navigate('/symptom')}
                     className="w-full flex items-center justify-center px-8 py-6 border border-transparent text-base font-medium rounded-md text-white bg-medical-500 hover:bg-medical-600 dark:bg-medical-600 dark:hover:bg-medical-700 md:py-6 md:text-lg md:px-10"
                   >
-                    Check My Symptoms
+                    {translate("hero.button.checkSymptoms")}
                   </Button>
                 ) : (
                   <Button
                     onClick={() => navigate('/register')}
                     className="w-full flex items-center justify-center px-8 py-6 border border-transparent text-base font-medium rounded-md text-white bg-medical-500 hover:bg-medical-600 dark:bg-medical-600 dark:hover:bg-medical-700 md:py-6 md:text-lg md:px-10"
                   >
-                    Get Started
+                    {translate("hero.button.getStarted")}
                   </Button>
                 )}
               </div>
@@ -88,7 +88,7 @@ const Hero = () => {
                     variant="outline"
                     className="w-full flex items-center justify-center px-8 py-6 border border-transparent text-base font-medium rounded-md text-medical-600 dark:text-medical-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 md:py-6 md:text-lg md:px-10"
                   >
-                    My Dashboard
+                    {translate("hero.button.dashboard")}
                   </Button>
                 ) : (
                   <Button
@@ -96,7 +96,7 @@ const Hero = () => {
                     variant="outline"
                     className="w-full flex items-center justify-center px-8 py-6 border border-transparent text-base font-medium rounded-md text-medical-600 dark:text-medical-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 md:py-6 md:text-lg md:px-10"
                   >
-                    Learn More
+                    {translate("hero.button.learnMore")}
                   </Button>
                 )}
               </div>
@@ -163,7 +163,7 @@ const Hero = () => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                   >
-                    About MediAI
+                    {translate("about.title")}
                   </motion.h3>
                   
                   <motion.div 
@@ -173,21 +173,15 @@ const Hero = () => {
                     transition={{ delay: 0.7 }}
                   >
                     <p>
-                      MediAI is an advanced, AI-powered platform revolutionizing healthcare by 
-                      enhancing diagnostic accuracy, streamlining clinical workflows, and enabling 
-                      personalized patient care.
+                      {translate("about.description.1")}
                     </p>
                     
                     <p>
-                      By leveraging cutting-edge machine learning algorithms, natural language 
-                      processing, and real-time data analytics, MediAI supports medical professionals 
-                      in making informed decisions.
+                      {translate("about.description.2")}
                     </p>
                     
                     <p>
-                      The system integrates with electronic health records, medical imaging tools, 
-                      and wearable health devices to provide a comprehensive, data-driven approach 
-                      to healthcare delivery.
+                      {translate("about.description.3")}
                     </p>
                     
                     <motion.div 
@@ -198,15 +192,15 @@ const Hero = () => {
                     >
                       <div className="flex items-center gap-2 text-medical-500 dark:text-medical-400 font-semibold">
                         <div className="w-2 h-2 bg-medical-500 dark:bg-medical-400 rounded-full"></div>
-                        Diagnostic Accuracy
+                        {translate("about.feature.1")}
                       </div>
                       <div className="flex items-center gap-2 text-purple-500 dark:text-purple-400 font-semibold mt-2">
                         <div className="w-2 h-2 bg-purple-500 dark:bg-purple-400 rounded-full"></div>
-                        Clinical Workflow Optimization
+                        {translate("about.feature.2")}
                       </div>
                       <div className="flex items-center gap-2 text-teal-500 dark:text-teal-400 font-semibold mt-2">
                         <div className="w-2 h-2 bg-teal-500 dark:bg-teal-400 rounded-full"></div>
-                        Personalized Patient Care
+                        {translate("about.feature.3")}
                       </div>
                     </motion.div>
                   </motion.div>
