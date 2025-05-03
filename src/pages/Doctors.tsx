@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { 
@@ -15,7 +14,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { UserDoctor, MapPin, Clock } from "lucide-react";
+import { User, MapPin, Clock } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 // Define types for doctor data
@@ -221,7 +220,7 @@ const Doctors = () => {
                               className="w-full h-full object-cover" 
                             />
                           ) : (
-                            <UserDoctor className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+                            <User className="w-8 h-8 text-gray-500 dark:text-gray-400" />
                           )}
                         </div>
                         <div>
