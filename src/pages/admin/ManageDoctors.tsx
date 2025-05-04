@@ -147,7 +147,17 @@ const ManageDoctors = () => {
   const handleAddDoctor = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
-      await adminService.addDoctor(data);
+      // Ensure all required fields are present
+      const doctorData = {
+        name: data.name,
+        specialization: data.specialization,
+        district: data.district,
+        availability: data.availability,
+        experience: data.experience,
+        imageUrl: data.imageUrl
+      };
+      
+      await adminService.addDoctor(doctorData);
       setIsAddDialogOpen(false);
       addForm.reset();
       toast({
@@ -172,7 +182,17 @@ const ManageDoctors = () => {
     
     setIsSubmitting(true);
     try {
-      await adminService.updateDoctor(selectedDoctor._id, data);
+      // Ensure all required fields are present
+      const doctorData = {
+        name: data.name,
+        specialization: data.specialization,
+        district: data.district,
+        availability: data.availability,
+        experience: data.experience,
+        imageUrl: data.imageUrl
+      };
+      
+      await adminService.updateDoctor(selectedDoctor._id, doctorData);
       setIsEditDialogOpen(false);
       toast({
         title: "Success",

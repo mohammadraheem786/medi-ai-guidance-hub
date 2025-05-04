@@ -52,8 +52,8 @@ export const authService = {
     name: string, 
     email: string, 
     password: string,
-    phone?: string,
-    gender?: string,
+    phone: string,
+    gender: string,
     age?: number,
     address?: string,
     medicalHistory?: string

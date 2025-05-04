@@ -1,4 +1,3 @@
-
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import { authService } from "@/services/api";
 import { toast } from "@/components/ui/use-toast";
@@ -19,8 +18,8 @@ interface RegisterData {
   name: string;
   email: string;
   password: string;
-  phone?: string;
-  gender?: string;
+  phone: string;
+  gender: string;
   age?: number;
   address?: string;
   medicalHistory?: string;

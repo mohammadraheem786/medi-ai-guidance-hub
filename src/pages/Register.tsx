@@ -59,7 +59,16 @@ const Register = () => {
     setIsSubmitting(true);
     
     try {
-      await registerUser(values);
+      await registerUser({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        phone: values.phone,
+        gender: values.gender,
+        age: values.age,
+        address: values.address || '',
+        medicalHistory: values.medicalHistory || ''
+      });
       if (isAdmin) {
         navigate('/admin/dashboard');
       } else {
