@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,7 +21,19 @@ import Doctors from "./pages/Doctors";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
+
+// Admin routes - lazy loaded
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const ManageUsers = lazy(() => import('./pages/admin/ManageUsers'));
+const ManageDoctors = lazy(() => import('./pages/admin/ManageDoctors'));
+
+// Admin route protection
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAdmin = localStorage.getItem('userRole') === 'admin';
+  return isAdmin ? <>{children}</> : <Navigate to="/login" />;
+};
 
 const queryClient = new QueryClient();
 
@@ -34,27 +47,57 @@ function App() {
               <Toaster />
               <Sonner />
               <BrowserRouter>
-                <Navbar />
-                <div className="pt-16 min-h-screen bg-background transition-colors duration-300">
+                <div className="min-h-screen bg-background transition-colors duration-300">
                   <Suspense fallback={
-                    <div className="flex items-center justify-center w-full h-[calc(100vh-4rem)]">
+                    <div className="flex items-center justify-center w-full h-screen">
                       <Loader size="large" text="Loading..." />
                     </div>
                   }>
                     <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/doctors" element={<Doctors />} />
+                      {/* Public Routes */}
+                      <Route path="/" element={<><Navbar /><Index /></>} />
+                      <Route path="/login" element={<><Navbar /><Login /></>} />
+                      <Route path="/register" element={<><Navbar /><Register /></>} />
+                      <Route path="/about" element={<><Navbar /><About /></>} />
+                      <Route path="/doctors" element={<><Navbar /><Doctors /></>} />
                       
-                      {/* Protected Routes */}
+                      {/* Protected User Routes */}
                       <Route element={<ProtectedRoute />}>
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/symptom" element={<SymptomPage />} />
-                        <Route path="/assessment" element={<Assessment />} />
-                        <Route path="/health-tips" element={<HealthTips />} />
+                        <Route path="/dashboard" element={<><Navbar /><Dashboard /></>} />
+                        <Route path="/symptom" element={<><Navbar /><SymptomPage /></>} />
+                        <Route path="/assessment" element={<><Navbar /><Assessment /></>} />
+                        <Route path="/health-tips" element={<><Navbar /><HealthTips /></>} />
                       </Route>
+                      
+                      {/* Admin Routes */}
+                      <Route path="/admin" element={
+                        <AdminRoute>
+                          <AdminLayout>
+                            <Navigate to="/admin/dashboard" replace />
+                          </AdminLayout>
+                        </AdminRoute>
+                      } />
+                      <Route path="/admin/dashboard" element={
+                        <AdminRoute>
+                          <AdminLayout>
+                            <AdminDashboard />
+                          </AdminLayout>
+                        </AdminRoute>
+                      } />
+                      <Route path="/admin/users" element={
+                        <AdminRoute>
+                          <AdminLayout>
+                            <ManageUsers />
+                          </AdminLayout>
+                        </AdminRoute>
+                      } />
+                      <Route path="/admin/doctors" element={
+                        <AdminRoute>
+                          <AdminLayout>
+                            <ManageDoctors />
+                          </AdminLayout>
+                        </AdminRoute>
+                      } />
                       
                       <Route path="*" element={<NotFound />} />
                     </Routes>

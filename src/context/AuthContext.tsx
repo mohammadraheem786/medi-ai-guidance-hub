@@ -7,14 +7,32 @@ interface User {
   id: string;
   name: string;
   email: string;
+  role?: string;
+  phone?: string;
+  gender?: string;
+  age?: number;
+  address?: string;
+  medicalHistory?: string;
+}
+
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  gender?: string;
+  age?: number;
+  address?: string;
+  medicalHistory?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -39,11 +57,15 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Initialize auth state from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    const userRole = localStorage.getItem("userRole");
+    
+    setIsAdmin(userRole === 'admin');
     
     if (storedToken) {
       setToken(storedToken);
@@ -51,16 +73,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Fetch current user
       authService.getCurrentUser()
         .then(response => {
+          const userData = response.data;
           setUser({
-            id: response.data._id,
-            name: response.data.name,
-            email: response.data.email
+            id: userData._id,
+            name: userData.name,
+            email: userData.email,
+            role: userData.role,
+            phone: userData.phone,
+            gender: userData.gender,
+            age: userData.age,
+            address: userData.address,
+            medicalHistory: userData.medicalHistory
           });
+          
+          setIsAdmin(userData.role === 'admin');
         })
         .catch(() => {
           // If token is invalid, remove it
           localStorage.removeItem("token");
+          localStorage.removeItem("userRole");
           setToken(null);
+          setIsAdmin(false);
         })
         .finally(() => {
           setIsLoading(false);
@@ -80,11 +113,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser({
         id: response.user.id,
         name: response.user.name,
-        email: response.user.email
+        email: response.user.email,
+        role: response.user.role
       });
+      
+      setIsAdmin(response.user.role === 'admin');
       
       // Store the token in localStorage
       localStorage.setItem("token", response.token);
+      localStorage.setItem("userRole", response.user.role || 'user');
       
       toast({
         title: "Login Successful",
@@ -104,25 +141,34 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (data: RegisterData) => {
     setIsLoading(true);
     
     try {
-      const response = await authService.register({ name, email, password });
+      const response = await authService.register(data);
       
       setToken(response.token);
       setUser({
         id: response.user.id || response.id,
-        name: response.user.name || name,
-        email: response.user.email || email
+        name: response.user.name || data.name,
+        email: response.user.email || data.email,
+        role: response.user.role || 'user',
+        phone: data.phone,
+        gender: data.gender,
+        age: data.age,
+        address: data.address,
+        medicalHistory: data.medicalHistory
       });
+      
+      setIsAdmin(false); // New users are never admins
       
       // Store the token in localStorage
       localStorage.setItem("token", response.token);
+      localStorage.setItem("userRole", response.user.role || 'user');
       
       toast({
         title: "Registration Successful",
-        description: `Welcome to MediAI, ${name}!`,
+        description: `Welcome to MediAI, ${data.name}!`,
       });
       
     } catch (error) {
@@ -143,6 +189,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     authService.logout();
     setUser(null);
     setToken(null);
+    setIsAdmin(false);
     
     toast({
       title: "Logged out",
@@ -154,6 +201,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     user,
     token,
     isLoading,
+    isAdmin,
     login,
     register,
     logout,

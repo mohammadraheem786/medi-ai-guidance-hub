@@ -12,19 +12,31 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/context/AuthContext';
 import { Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Textarea } from "@/components/ui/textarea";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters long' }),
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters long' }),
-  
-})
+  phone: z.string().min(10, { message: 'Please enter a valid phone number' }),
+  gender: z.enum(['Male', 'Female', 'Other']),
+  age: z.coerce.number().min(1, { message: 'Age must be a positive number' }).optional(),
+  address: z.string().optional(),
+  medicalHistory: z.string().optional()
+});
 
 type FormValues = z.infer<typeof formSchema>;
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register: registerUser, isAuthenticated, isLoading } = useAuth();
+  const { register: registerUser, isAuthenticated, isLoading, isAdmin } = useAuth();
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,7 +45,12 @@ const Register = () => {
     defaultValues: {
       name: '',
       email: '',
-      password: ''
+      password: '',
+      phone: '',
+      gender: 'Other',
+      age: undefined,
+      address: '',
+      medicalHistory: ''
     },
   });
 
@@ -42,8 +59,12 @@ const Register = () => {
     setIsSubmitting(true);
     
     try {
-      await registerUser(values.name, values.email, values.password);
-      navigate('/dashboard');
+      await registerUser(values);
+      if (isAdmin) {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       console.log('Registration error:', err);
     } finally {
@@ -60,7 +81,7 @@ const Register = () => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
+    return isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/dashboard" />;
   }
 
   return (
@@ -68,9 +89,9 @@ const Register = () => {
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       transition={{ duration: 0.5 }}
-      className="pt-20 min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4"
+      className="pt-20 min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-10"
     >
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-xl">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -93,15 +114,143 @@ const Register = () => {
               )}
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter your full name" 
+                              type="text" 
+                              {...field} 
+                              disabled={isSubmitting}
+                              className="bg-white dark:bg-gray-800"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter your email" 
+                              type="email" 
+                              {...field} 
+                              disabled={isSubmitting}
+                              className="bg-white dark:bg-gray-800"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Create a password" 
+                              type="password" 
+                              {...field} 
+                              disabled={isSubmitting}
+                              className="bg-white dark:bg-gray-800"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter your phone number" 
+                              type="tel" 
+                              {...field} 
+                              disabled={isSubmitting}
+                              className="bg-white dark:bg-gray-800"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Gender</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value} 
+                            disabled={isSubmitting}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="bg-white dark:bg-gray-800">
+                                <SelectValue placeholder="Select your gender" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Male">Male</SelectItem>
+                              <SelectItem value="Female">Female</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="age"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Age</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter your age" 
+                              type="number" 
+                              {...field} 
+                              disabled={isSubmitting}
+                              className="bg-white dark:bg-gray-800"
+                              onChange={(e) => {
+                                const value = e.target.value === '' ? undefined : parseInt(e.target.value);
+                                field.onChange(value);
+                              }}
+                              value={field.value || ''}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormField
                     control={form.control}
-                    name="name"
+                    name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>Address</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="Enter your full name" 
+                            placeholder="Enter your address" 
                             type="text" 
                             {...field} 
                             disabled={isSubmitting}
@@ -114,36 +263,16 @@ const Register = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="email"
+                    name="medicalHistory"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Medical History (Optional)</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="Enter your email" 
-                            type="email" 
+                          <Textarea 
+                            placeholder="Enter any relevant medical history" 
                             {...field} 
                             disabled={isSubmitting}
-                            className="bg-white dark:bg-gray-800"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="Create a password" 
-                            type="password" 
-                            {...field} 
-                            disabled={isSubmitting}
-                            className="bg-white dark:bg-gray-800"
+                            className="bg-white dark:bg-gray-800 min-h-[100px]"
                           />
                         </FormControl>
                         <FormMessage />

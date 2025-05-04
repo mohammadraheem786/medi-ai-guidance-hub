@@ -48,11 +48,21 @@ api.interceptors.response.use(
 
 // Auth service
 export const authService = {
-  register: async (userData: { name: string, email: string, password: string }) => {
+  register: async (userData: { 
+    name: string, 
+    email: string, 
+    password: string,
+    phone?: string,
+    gender?: string,
+    age?: number,
+    address?: string,
+    medicalHistory?: string
+  }) => {
     try {
       const response = await api.post('/auth/register', userData);
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userRole', response.data.user.role || 'user');
       }
       return response.data;
     } catch (error) {
@@ -65,6 +75,7 @@ export const authService = {
     const response = await api.post('/auth/login', credentials);
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userRole', response.data.user.role || 'user');
     }
     return response.data;
   },
@@ -75,10 +86,15 @@ export const authService = {
   
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
   },
   
   isAuthenticated: () => {
     return localStorage.getItem('token') !== null;
+  },
+  
+  isAdmin: () => {
+    return localStorage.getItem('userRole') === 'admin';
   }
 };
 
@@ -137,6 +153,58 @@ export const healthTipsService = {
   
   getPersonalizedHealthTips: async () => {
     const response = await api.get('/health-tips/personalized');
+    return response.data;
+  }
+};
+
+// Admin service
+export const adminService = {
+  getUsers: async () => {
+    const response = await api.get('/admin/users');
+    return response.data;
+  },
+  
+  getUserById: async (id: string) => {
+    const response = await api.get(`/admin/users/${id}`);
+    return response.data;
+  },
+  
+  getUserActivities: async (id: string) => {
+    const response = await api.get(`/admin/users/${id}/activities`);
+    return response.data;
+  },
+  
+  getDoctors: async () => {
+    const response = await api.get('/admin/doctors');
+    return response.data;
+  },
+  
+  addDoctor: async (doctor: {
+    name: string,
+    specialization: string,
+    district: string,
+    availability: string,
+    experience: string,
+    imageUrl?: string
+  }) => {
+    const response = await api.post('/admin/doctors', doctor);
+    return response.data;
+  },
+  
+  updateDoctor: async (id: string, doctor: {
+    name: string,
+    specialization: string,
+    district: string,
+    availability: string,
+    experience: string,
+    imageUrl?: string
+  }) => {
+    const response = await api.put(`/admin/doctors/${id}`, doctor);
+    return response.data;
+  },
+  
+  deleteDoctor: async (id: string) => {
+    const response = await api.delete(`/admin/doctors/${id}`);
     return response.data;
   }
 };

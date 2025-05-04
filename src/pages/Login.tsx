@@ -22,7 +22,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated, isLoading } = useAuth();
+  const { login, isAuthenticated, isLoading, isAdmin } = useAuth();
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -40,7 +40,7 @@ const Login = () => {
     
     try {
       await login(values.email, values.password);
-      navigate('/dashboard');
+      // Redirect is handled in the useEffect below
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
     } finally {
@@ -57,7 +57,7 @@ const Login = () => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
+    return isAdmin ? <Navigate to="/admin/dashboard" /> : <Navigate to="/dashboard" />;
   }
 
   return (

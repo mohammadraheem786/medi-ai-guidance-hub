@@ -5,7 +5,7 @@ const User = require('../models/User');
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone, gender, age, address, medicalHistory } = req.body;
 
     // Check if user already exists
     let user = await User.findOne({ email });
@@ -17,7 +17,12 @@ exports.register = async (req, res) => {
     user = new User({
       name,
       email,
-      password
+      password,
+      phone,
+      gender,
+      age,
+      address,
+      medicalHistory
     });
 
     // Save user to database
@@ -26,10 +31,29 @@ exports.register = async (req, res) => {
     // Create JWT payload
     const payload = {
       user: {
-        id: user.id
+        id: user.id,
+        role: user.role
       }
     };
 
+    // Sign token
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' },
+      (err, token) => {
+        if (err) throw err;
+        res.status(201).json({ 
+          token,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+          }
+        });
+      }
+    );
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -56,7 +80,8 @@ exports.login = async (req, res) => {
     // Create JWT payload
     const payload = {
       user: {
-        id: user.id
+        id: user.id,
+        role: user.role
       }
     };
 
@@ -72,7 +97,8 @@ exports.login = async (req, res) => {
           user: {
             id: user.id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            role: user.role
           }
         });
       }
@@ -91,5 +117,27 @@ exports.getCurrentUser = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
+  }
+};
+
+// Create admin user if it doesn't exist
+exports.createAdminUser = async () => {
+  try {
+    // Check if admin already exists
+    const adminExists = await User.findOne({ email: 'admin@mediai.com' });
+    
+    if (!adminExists) {
+      const admin = new User({
+        name: 'Admin',
+        email: 'admin@mediai.com',
+        password: 'admin123',
+        role: 'admin'
+      });
+      
+      await admin.save();
+      console.log('Admin user created successfully');
+    }
+  } catch (error) {
+    console.error('Error creating admin user:', error);
   }
 };

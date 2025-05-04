@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const { createAdminUser } = require('./controllers/authController');
 
 // Load environment variables
 dotenv.config();
@@ -19,7 +20,11 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('MongoDB connected successfully'))
+.then(() => {
+  console.log('MongoDB connected successfully');
+  // Create admin user if it doesn't exist
+  createAdminUser();
+})
 .catch(err => {
   console.error('MongoDB connection error:', err);
   process.exit(1);
@@ -30,6 +35,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/symptoms', require('./routes/symptoms'));
 app.use('/api/assessments', require('./routes/assessments'));
 app.use('/api/health-tips', require('./routes/healthTips'));
+app.use('/api/admin', require('./routes/admin'));
 
 // Simple route for testing
 app.get('/', (req, res) => {
