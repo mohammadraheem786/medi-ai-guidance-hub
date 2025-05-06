@@ -19,6 +19,17 @@ const SymptomSchema = new mongoose.Schema({
     type: String,
     enum: ['mild', 'moderate', 'severe'],
     required: true
+  },
+  personalizedAdvice: {
+    type: String,
+    required: false
+  },
+  possibleCauses: [{
+    type: String
+  }],
+  whenToSeekHelp: {
+    type: String,
+    required: false
   }
 });
 

@@ -23,6 +23,16 @@ const ConditionSchema = new mongoose.Schema({
   recommendations: [{
     type: String,
     required: true
+  }],
+  specificSymptomAdvice: [{
+    symptom: {
+      type: String,
+      required: true
+    },
+    advice: {
+      type: String,
+      required: true
+    }
   }]
 });
 

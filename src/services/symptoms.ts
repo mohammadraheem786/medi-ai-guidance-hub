@@ -4,6 +4,9 @@ export interface Symptom {
   description: string;
   bodyPart: string;
   severity: 'mild' | 'moderate' | 'severe';
+  personalizedAdvice?: string;
+  possibleCauses?: string[];
+  whenToSeekHelp?: string;
 }
 
 export interface SymptomMatch {
@@ -12,6 +15,13 @@ export interface SymptomMatch {
   description: string;
   severity: 'mild' | 'moderate' | 'severe';
   recommendations: string[];
+  symptomSpecificAdvice?: Record<string, string>;
+  matchingSymptoms?: string[];
+}
+
+export interface AnalysisResult {
+  conditions: SymptomMatch[];
+  symptomDetails: Record<string, Symptom>;
 }
 
 // Mock symptom database
@@ -22,6 +32,9 @@ const symptomDatabase: Symptom[] = [
     description: 'Pain in the head or upper neck',
     bodyPart: 'head',
     severity: 'mild',
+    personalizedAdvice: 'For headaches, try resting in a dark room and staying hydrated. Apply a cold compress to your forehead or neck.',
+    possibleCauses: ['Stress', 'Dehydration', 'Lack of sleep', 'Eye strain'],
+    whenToSeekHelp: 'Seek medical attention if your headache is severe, comes on suddenly, or is accompanied by fever, stiff neck, confusion, seizures, double vision, weakness, numbness or difficulty speaking.'
   },
   {
     id: '2',
@@ -29,6 +42,9 @@ const symptomDatabase: Symptom[] = [
     description: 'Elevated body temperature',
     bodyPart: 'whole body',
     severity: 'moderate',
+    personalizedAdvice: 'Stay hydrated and get plenty of rest. Take over-the-counter fever reducers as directed. Use a lukewarm compress if the fever is high.',
+    possibleCauses: ['Infection', 'Inflammatory conditions', 'Medication reactions'],
+    whenToSeekHelp: 'Seek immediate medical attention if fever is above 103°F (39.4°C), lasts more than 3 days, or is accompanied by severe symptoms.'
   },
   {
     id: '3',
@@ -88,7 +104,7 @@ const symptomDatabase: Symptom[] = [
   },
 ];
 
-// Mock condition database
+// Mock condition database with symptom-specific advice
 const conditionDatabase = [
   {
     name: 'Common Cold',
@@ -101,6 +117,12 @@ const conditionDatabase = [
       'Use a humidifier',
       'Consult a doctor if symptoms persist beyond 7-10 days'
     ],
+    symptomSpecificAdvice: {
+      'Headache': 'For cold-related headaches, try a warm compress on your sinuses and stay hydrated.',
+      'Cough': 'Use honey and lemon in warm water to soothe your throat and reduce coughing (not for children under 1 year).',
+      'Sore throat': 'Gargle with salt water and drink warm liquids to relieve sore throat pain from a cold.',
+      'Fever': 'A low-grade fever with a cold usually doesn\'t require specific treatment beyond rest and fluids.'
+    }
   },
   {
     name: 'Influenza',
@@ -113,6 +135,12 @@ const conditionDatabase = [
       'Use antiviral medication if prescribed',
       'Seek medical attention if symptoms are severe or you\'re in a high-risk group'
     ],
+    symptomSpecificAdvice: {
+      'Fever': 'Influenza fevers can be high - take acetaminophen or ibuprofen as directed and use cooling methods if needed.',
+      'Cough': 'For flu-related cough, use a humidifier and consider cough suppressants at night to help with sleep.',
+      'Fatigue': 'The extreme fatigue with influenza requires extra rest - don\'t rush back to normal activities.',
+      'Headache': 'Flu headaches can be intense - use pain relievers and consider a cool, dark room to rest in.'
+    }
   },
   {
     name: 'COVID-19',
@@ -125,6 +153,12 @@ const conditionDatabase = [
       'Monitor oxygen levels if possible',
       'Seek immediate medical attention if experiencing severe symptoms'
     ],
+    symptomSpecificAdvice: {
+      'Fever': 'COVID-19 fevers can be high - take acetaminophen or ibuprofen as directed and use cooling methods if needed.',
+      'Cough': 'For COVID-19 cough, use a humidifier and consider cough suppressants at night to help with sleep.',
+      'Fatigue': 'The extreme fatigue with COVID-19 requires extra rest - don\'t rush back to normal activities.',
+      'Shortness of breath': 'COVID-19 shortness of breath can be severe - use oxygen therapy if needed.'
+    }
   },
   {
     name: 'Migraine',
@@ -137,6 +171,11 @@ const conditionDatabase = [
       'Take pain relievers as recommended',
       'Consider preventative medications if migraines are frequent'
     ],
+    symptomSpecificAdvice: {
+      'Headache': 'For migraine headaches, try a warm compress on your forehead and stay hydrated.',
+      'Nausea': 'Migraine nausea can be severe - try ginger or peppermint tea.',
+      'Dizziness': 'Migraine dizziness can be intense - use a cool, dark room to rest in.'
+    }
   },
   {
     name: 'Gastroenteritis',
@@ -149,6 +188,12 @@ const conditionDatabase = [
       'Avoid dairy, caffeine, and fatty foods',
       'See a doctor if symptoms persist beyond a few days or if there are signs of dehydration'
     ],
+    symptomSpecificAdvice: {
+      'Nausea': 'Gastroenteritis nausea can be severe - try ginger or peppermint tea.',
+      'Abdominal pain': 'Gastroenteritis abdominal pain can be severe - try warm liquids and rest.',
+      'Fever': 'Gastroenteritis fever can be high - take acetaminophen or ibuprofen as directed.',
+      'Fatigue': 'Gastroenteritis fatigue can be severe - get plenty of rest and stay hydrated.'
+    }
   },
   {
     name: 'Heart Attack',
@@ -161,15 +206,37 @@ const conditionDatabase = [
       'Rest in a position that eases breathing',
       'Seek immediate medical attention - this is a life-threatening emergency'
     ],
+    symptomSpecificAdvice: {
+      'Chest pain': 'Heart attack chest pain can be severe - use a cool, dark room to rest in.',
+      'Shortness of breath': 'Heart attack shortness of breath can be severe - use oxygen therapy if needed.',
+      'Dizziness': 'Heart attack dizziness can be intense - use a cool, dark room to rest in.',
+      'Fatigue': 'Heart attack fatigue can be severe - get plenty of rest and stay hydrated.'
+    }
   },
 ];
 
 // Storage key for localStorage
 const SYMPTOM_HISTORY_STORAGE_KEY = 'mediAI-symptom-history';
 
-// Function to analyze symptoms
-export const analyzeSymptoms = (userSymptoms: string[]): SymptomMatch[] => {
+// Function to analyze symptoms with personalized responses
+export const analyzeSymptoms = (userSymptoms: string[]): AnalysisResult => {
   const matches: SymptomMatch[] = [];
+  const symptomDetails: Record<string, any> = {};
+  
+  // Get symptom details
+  userSymptoms.forEach(symptomName => {
+    const symptom = symptomDatabase.find(s => s.name === symptomName);
+    if (symptom) {
+      symptomDetails[symptomName] = {
+        description: symptom.description,
+        bodyPart: symptom.bodyPart,
+        severity: symptom.severity,
+        personalizedAdvice: symptom.personalizedAdvice,
+        possibleCauses: symptom.possibleCauses,
+        whenToSeekHelp: symptom.whenToSeekHelp
+      };
+    }
+  });
   
   for (const condition of conditionDatabase) {
     // Calculate match score based on symptom overlap
@@ -181,18 +248,40 @@ export const analyzeSymptoms = (userSymptoms: string[]): SymptomMatch[] => {
     const probability = matchingSymptoms.length / condition.symptoms.length;
     
     if (probability > 0) {
+      // Collect personalized advice for matching symptoms
+      const symptomSpecificAdvice: Record<string, string> = {};
+      
+      matchingSymptoms.forEach(symptomName => {
+        // Get condition-specific advice for this symptom if available
+        if (condition.symptomSpecificAdvice && condition.symptomSpecificAdvice[symptomName]) {
+          symptomSpecificAdvice[symptomName] = condition.symptomSpecificAdvice[symptomName];
+        }
+        // Fallback to general symptom advice
+        else {
+          const symptom = symptomDatabase.find(s => s.name === symptomName);
+          if (symptom?.personalizedAdvice) {
+            symptomSpecificAdvice[symptomName] = symptom.personalizedAdvice;
+          }
+        }
+      });
+      
       matches.push({
         condition: condition.name,
         probability: parseFloat((probability * 100).toFixed(1)),
         description: condition.description,
         severity: condition.severity as 'mild' | 'moderate' | 'severe',
-        recommendations: condition.recommendations
+        recommendations: condition.recommendations,
+        symptomSpecificAdvice,
+        matchingSymptoms
       });
     }
   }
   
   // Sort by probability (highest first)
-  return matches.sort((a, b) => b.probability - a.probability);
+  return {
+    conditions: matches.sort((a, b) => b.probability - a.probability),
+    symptomDetails
+  };
 };
 
 // Function to get all available symptoms
@@ -201,7 +290,7 @@ export const getAvailableSymptoms = (): string[] => {
 };
 
 // Function to save symptom analysis to history
-export const saveSymptomAnalysis = (userSymptoms: string[], results: SymptomMatch[]): void => {
+export const saveSymptomAnalysis = (userSymptoms: string[], results: AnalysisResult): void => {
   const existingHistory = localStorage.getItem(SYMPTOM_HISTORY_STORAGE_KEY);
   const history = existingHistory ? JSON.parse(existingHistory) : [];
   

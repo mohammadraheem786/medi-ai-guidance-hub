@@ -4,10 +4,11 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SymptomForm from '@/components/SymptomForm';
-import { SymptomMatch, getSymptomHistory } from '@/services/symptoms';
+import { AnalysisResult, SymptomMatch, getSymptomHistory } from '@/services/symptoms';
 import { useLanguage } from '@/context/LanguageContext';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const SymptomPage = () => {
@@ -15,9 +16,10 @@ const SymptomPage = () => {
   const historyId = searchParams.get('id');
   const { translate } = useLanguage();
   
-  const [analysisResults, setAnalysisResults] = useState<SymptomMatch[]>([]);
+  const [analysisResults, setAnalysisResults] = useState<AnalysisResult | null>(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [hasCompletedAnalysis, setHasCompletedAnalysis] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("conditions");
 
   useEffect(() => {
     // If historyId is provided, load that specific analysis
@@ -33,14 +35,14 @@ const SymptomPage = () => {
     }
   }, [historyId]);
 
-  const handleAnalysisComplete = (results: SymptomMatch[], symptoms: string[]) => {
+  const handleAnalysisComplete = (results: AnalysisResult, symptoms: string[]) => {
     setAnalysisResults(results);
     setSelectedSymptoms(symptoms);
     setHasCompletedAnalysis(true);
   };
 
   const handleStartOver = () => {
-    setAnalysisResults([]);
+    setAnalysisResults(null);
     setSelectedSymptoms([]);
     setHasCompletedAnalysis(false);
   };
@@ -107,7 +109,7 @@ const SymptomPage = () => {
           <div className="max-w-2xl mx-auto">
             <SymptomForm onAnalysisComplete={handleAnalysisComplete} />
           </div>
-        ) : (
+        ) : analysisResults && (
           <motion.div 
             className="space-y-6"
             variants={containerVariants}
@@ -123,49 +125,128 @@ const SymptomPage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {analysisResults.length > 0 ? (
+                  {analysisResults.conditions.length > 0 ? (
                     <div className="space-y-6">
-                      {analysisResults.map((result, index) => (
-                        <motion.div 
-                          key={result.condition} 
-                          className={`p-4 rounded-lg ${index === 0 ? 'bg-gray-50 dark:bg-gray-800 border' : ''}`}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.5, delay: index * 0.2 }}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <h3 className="text-lg font-medium">{result.condition}</h3>
-                              <div className="flex items-center mt-1">
-                                <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">
-                                  Match probability: {result.probability}%
-                                </span>
-                                <Badge className={getSeverityColor(result.severity)}>
-                                  {getSeverityLabel(result.severity)}
-                                </Badge>
+                      <Tabs value={activeTab} onValueChange={setActiveTab}>
+                        <TabsList className="grid w-full grid-cols-2 mb-6">
+                          <TabsTrigger value="conditions">Possible Conditions</TabsTrigger>
+                          <TabsTrigger value="symptoms">Symptom Details</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="conditions" className="space-y-6">
+                          {analysisResults.conditions.map((result, index) => (
+                            <motion.div 
+                              key={result.condition} 
+                              className={`p-4 rounded-lg ${index === 0 ? 'bg-gray-50 dark:bg-gray-800 border' : ''}`}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.5, delay: index * 0.2 }}
+                            >
+                              <div className="flex justify-between items-start mb-2">
+                                <div>
+                                  <h3 className="text-lg font-medium">{result.condition}</h3>
+                                  <div className="flex items-center mt-1">
+                                    <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">
+                                      Match probability: {result.probability}%
+                                    </span>
+                                    <Badge className={getSeverityColor(result.severity)}>
+                                      {getSeverityLabel(result.severity)}
+                                    </Badge>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
+                              <p className="text-gray-700 dark:text-gray-300 mb-4">{result.description}</p>
+                              
+                              {/* General Recommendations */}
+                              <div className="mt-4">
+                                <h4 className="font-medium mb-2">General Recommendations:</h4>
+                                <ul className="list-disc pl-5 space-y-1">
+                                  {result.recommendations.map((recommendation, i) => (
+                                    <li key={i} className="text-gray-700 dark:text-gray-300">{recommendation}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              
+                              {/* Symptom-Specific Advice */}
+                              {result.symptomSpecificAdvice && Object.keys(result.symptomSpecificAdvice).length > 0 && (
+                                <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+                                  <h4 className="font-medium mb-2 flex items-center gap-1">
+                                    <Info className="h-4 w-4" />
+                                    Personalized Symptom Advice:
+                                  </h4>
+                                  <div className="space-y-3">
+                                    {Object.entries(result.symptomSpecificAdvice).map(([symptom, advice]) => (
+                                      <div key={symptom} className="mb-2">
+                                        <h5 className="font-medium text-sm">{symptom}:</h5>
+                                        <p className="text-sm text-gray-700 dark:text-gray-300">{advice}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {result.severity === 'severe' && (
+                                <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                                  <p className="text-red-700 dark:text-red-400 text-sm font-medium">
+                                    Warning: These symptoms may indicate a serious condition. Please seek medical advice promptly.
+                                  </p>
+                                </div>
+                              )}
+                            </motion.div>
+                          ))}
+                        </TabsContent>
+                        
+                        <TabsContent value="symptoms">
+                          <div className="space-y-4">
+                            {selectedSymptoms.map((symptomName) => {
+                              const symptomDetail = analysisResults.symptomDetails[symptomName];
+                              if (!symptomDetail) return null;
+                              
+                              return (
+                                <Card key={symptomName} className="overflow-hidden">
+                                  <CardHeader className="bg-gray-50 dark:bg-gray-800 pb-2">
+                                    <div className="flex justify-between items-center">
+                                      <CardTitle className="text-base">{symptomName}</CardTitle>
+                                      <Badge className={getSeverityColor(symptomDetail.severity)}>
+                                        {getSeverityLabel(symptomDetail.severity)}
+                                      </Badge>
+                                    </div>
+                                    <CardDescription>
+                                      {symptomDetail.bodyPart} | {symptomDetail.description}
+                                    </CardDescription>
+                                  </CardHeader>
+                                  <CardContent className="pt-4">
+                                    {symptomDetail.personalizedAdvice && (
+                                      <div className="mb-3">
+                                        <h4 className="text-sm font-medium mb-1">Personal Advice:</h4>
+                                        <p className="text-gray-700 dark:text-gray-300 text-sm">{symptomDetail.personalizedAdvice}</p>
+                                      </div>
+                                    )}
+                                    
+                                    {symptomDetail.possibleCauses && symptomDetail.possibleCauses.length > 0 && (
+                                      <div className="mb-3">
+                                        <h4 className="text-sm font-medium mb-1">Possible Causes:</h4>
+                                        <ul className="list-disc pl-5 text-sm text-gray-700 dark:text-gray-300">
+                                          {symptomDetail.possibleCauses.map((cause: string, i: number) => (
+                                            <li key={i}>{cause}</li>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    )}
+                                    
+                                    {symptomDetail.whenToSeekHelp && (
+                                      <div className="mt-3 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-md">
+                                        <h4 className="text-sm font-medium mb-1">When to Seek Help:</h4>
+                                        <p className="text-sm">{symptomDetail.whenToSeekHelp}</p>
+                                      </div>
+                                    )}
+                                  </CardContent>
+                                </Card>
+                              );
+                            })}
                           </div>
-                          <p className="text-gray-700 dark:text-gray-300 mb-4">{result.description}</p>
-                          
-                          <div className="mt-4">
-                            <h4 className="font-medium mb-2">Recommendations:</h4>
-                            <ul className="list-disc pl-5 space-y-1">
-                              {result.recommendations.map((recommendation, i) => (
-                                <li key={i} className="text-gray-700 dark:text-gray-300">{recommendation}</li>
-                              ))}
-                            </ul>
-                          </div>
-                          
-                          {result.severity === 'severe' && (
-                            <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-                              <p className="text-red-700 dark:text-red-400 text-sm font-medium">
-                                Warning: These symptoms may indicate a serious condition. Please seek medical advice promptly.
-                              </p>
-                            </div>
-                          )}
-                        </motion.div>
-                      ))}
+                        </TabsContent>
+                      </Tabs>
                       
                       <motion.div 
                         className="flex items-center gap-4 justify-center pt-4 border-t"

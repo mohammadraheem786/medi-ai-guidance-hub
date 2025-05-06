@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
-import { analyzeSymptoms, getAvailableSymptoms, saveSymptomAnalysis, SymptomMatch } from "@/services/symptoms";
+import { analyzeSymptoms, getAvailableSymptoms, saveSymptomAnalysis, AnalysisResult } from "@/services/symptoms";
 import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
 
 interface SymptomFormProps {
-  onAnalysisComplete: (results: SymptomMatch[], selectedSymptoms: string[]) => void;
+  onAnalysisComplete: (results: AnalysisResult, selectedSymptoms: string[]) => void;
 }
 
 const SymptomForm = ({ onAnalysisComplete }: SymptomFormProps) => {
