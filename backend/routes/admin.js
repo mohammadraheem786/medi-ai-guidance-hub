@@ -9,39 +9,28 @@ const adminAuth = require('../middleware/adminAuth');
 router.use(auth);
 router.use(adminAuth);
 
-// @route   GET api/admin/users
-// @desc    Get all users
-// @access  Admin
+// User management
 router.get('/users', adminController.getUsers);
-
-// @route   GET api/admin/users/:id
-// @desc    Get user by ID
-// @access  Admin
 router.get('/users/:id', adminController.getUserById);
-
-// @route   GET api/admin/users/:id/activities
-// @desc    Get user activities
-// @access  Admin
 router.get('/users/:id/activities', adminController.getUserActivities);
+router.put('/users/:id/toggle-status', adminController.toggleUserStatus);
 
-// @route   GET api/admin/doctors
-// @desc    Get all doctors
-// @access  Admin
+// Doctor management
 router.get('/doctors', adminController.getDoctors);
-
-// @route   POST api/admin/doctors
-// @desc    Add a doctor
-// @access  Admin
 router.post('/doctors', adminController.addDoctor);
-
-// @route   PUT api/admin/doctors/:id
-// @desc    Update a doctor
-// @access  Admin
 router.put('/doctors/:id', adminController.updateDoctor);
-
-// @route   DELETE api/admin/doctors/:id
-// @desc    Delete a doctor
-// @access  Admin
 router.delete('/doctors/:id', adminController.deleteDoctor);
+
+// Announcement management
+router.get('/announcements', adminController.getAnnouncements);
+router.post('/announcements', adminController.createAnnouncement);
+router.delete('/announcements/:id', adminController.deleteAnnouncement);
+
+// Content management
+router.put('/symptoms/:id', adminController.updateSymptom);
+router.put('/conditions/:id', adminController.updateCondition);
+
+// Analytics
+router.get('/analytics', adminController.getAnalytics);
 
 module.exports = router;

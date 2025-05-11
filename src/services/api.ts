@@ -98,6 +98,118 @@ export const authService = {
   }
 };
 
+// Admin service
+export const adminService = {
+  // User management
+  getUsers: async () => {
+    const response = await api.get('/admin/users');
+    return response.data;
+  },
+  
+  getUserById: async (id: string) => {
+    const response = await api.get(`/admin/users/${id}`);
+    return response.data;
+  },
+  
+  getUserActivities: async (id: string) => {
+    const response = await api.get(`/admin/users/${id}/activities`);
+    return response.data;
+  },
+
+  toggleUserStatus: async (id: string) => {
+    const response = await api.put(`/admin/users/${id}/toggle-status`);
+    return response.data;
+  },
+  
+  // Doctor management
+  getDoctors: async () => {
+    const response = await api.get('/admin/doctors');
+    return response.data;
+  },
+  
+  addDoctor: async (doctor: {
+    name: string,
+    specialization: string,
+    district: string,
+    availability: string,
+    experience: string,
+    imageUrl?: string
+  }) => {
+    const response = await api.post('/admin/doctors', doctor);
+    return response.data;
+  },
+  
+  updateDoctor: async (id: string, doctor: {
+    name: string,
+    specialization: string,
+    district: string,
+    availability: string,
+    experience: string,
+    imageUrl?: string
+  }) => {
+    const response = await api.put(`/admin/doctors/${id}`, doctor);
+    return response.data;
+  },
+  
+  deleteDoctor: async (id: string) => {
+    const response = await api.delete(`/admin/doctors/${id}`);
+    return response.data;
+  },
+
+  // Announcements
+  getAnnouncements: async () => {
+    const response = await api.get('/admin/announcements');
+    return response.data;
+  },
+
+  createAnnouncement: async (announcement: {
+    title: string,
+    content: string,
+    importance: 'info' | 'warning' | 'critical',
+    expiresAt?: Date
+  }) => {
+    const response = await api.post('/admin/announcements', announcement);
+    return response.data;
+  },
+
+  deleteAnnouncement: async (id: string) => {
+    const response = await api.delete(`/admin/announcements/${id}`);
+    return response.data;
+  },
+
+  // Content management
+  updateSymptom: async (id: string, data: {
+    name?: string,
+    description?: string,
+    bodyPart?: string,
+    severity?: string,
+    personalizedAdvice?: string,
+    possibleCauses?: string[],
+    whenToSeekHelp?: string
+  }) => {
+    const response = await api.put(`/admin/symptoms/${id}`, data);
+    return response.data;
+  },
+
+  updateCondition: async (id: string, data: {
+    name?: string,
+    symptoms?: string[],
+    description?: string,
+    severity?: string,
+    recommendations?: string[],
+    specificSymptomAdvice?: Array<{ symptom: string, advice: string }>
+  }) => {
+    const response = await api.put(`/admin/conditions/${id}`, data);
+    return response.data;
+  },
+
+  // Analytics
+  getAnalytics: async () => {
+    const response = await api.get('/admin/analytics');
+    return response.data;
+  }
+};
+
 // Symptoms service
 export const symptomsService = {
   getAllSymptoms: async () => {
@@ -153,58 +265,6 @@ export const healthTipsService = {
   
   getPersonalizedHealthTips: async () => {
     const response = await api.get('/health-tips/personalized');
-    return response.data;
-  }
-};
-
-// Admin service
-export const adminService = {
-  getUsers: async () => {
-    const response = await api.get('/admin/users');
-    return response.data;
-  },
-  
-  getUserById: async (id: string) => {
-    const response = await api.get(`/admin/users/${id}`);
-    return response.data;
-  },
-  
-  getUserActivities: async (id: string) => {
-    const response = await api.get(`/admin/users/${id}/activities`);
-    return response.data;
-  },
-  
-  getDoctors: async () => {
-    const response = await api.get('/admin/doctors');
-    return response.data;
-  },
-  
-  addDoctor: async (doctor: {
-    name: string,
-    specialization: string,
-    district: string,
-    availability: string,
-    experience: string,
-    imageUrl?: string
-  }) => {
-    const response = await api.post('/admin/doctors', doctor);
-    return response.data;
-  },
-  
-  updateDoctor: async (id: string, doctor: {
-    name: string,
-    specialization: string,
-    district: string,
-    availability: string,
-    experience: string,
-    imageUrl?: string
-  }) => {
-    const response = await api.put(`/admin/doctors/${id}`, doctor);
-    return response.data;
-  },
-  
-  deleteDoctor: async (id: string) => {
-    const response = await api.delete(`/admin/doctors/${id}`);
     return response.data;
   }
 };

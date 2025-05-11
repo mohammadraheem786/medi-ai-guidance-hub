@@ -28,6 +28,8 @@ const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const ManageUsers = lazy(() => import('./pages/admin/ManageUsers'));
 const ManageDoctors = lazy(() => import('./pages/admin/ManageDoctors'));
+const ManageAnnouncements = lazy(() => import('./pages/admin/ManageAnnouncements'));
+const ManageContent = lazy(() => import('./pages/admin/ManageContent'));
 
 // Admin route protection
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
@@ -35,7 +37,14 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   return isAdmin ? <>{children}</> : <Navigate to="/login" />;
 };
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   return (
@@ -95,6 +104,20 @@ function App() {
                         <AdminRoute>
                           <AdminLayout>
                             <ManageDoctors />
+                          </AdminLayout>
+                        </AdminRoute>
+                      } />
+                      <Route path="/admin/announcements" element={
+                        <AdminRoute>
+                          <AdminLayout>
+                            <ManageAnnouncements />
+                          </AdminLayout>
+                        </AdminRoute>
+                      } />
+                      <Route path="/admin/content" element={
+                        <AdminRoute>
+                          <AdminLayout>
+                            <ManageContent />
                           </AdminLayout>
                         </AdminRoute>
                       } />
