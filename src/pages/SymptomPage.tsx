@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import SymptomForm from '@/components/SymptomForm';
 import { AnalysisResult, SymptomMatch, getSymptomHistory } from '@/services/symptoms';
 import { useLanguage } from '@/context/LanguageContext';
@@ -20,6 +21,7 @@ const SymptomPage = () => {
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [hasCompletedAnalysis, setHasCompletedAnalysis] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("conditions");
+  const [useAI, setUseAI] = useState<boolean>(false);
 
   useEffect(() => {
     // If historyId is provided, load that specific analysis
@@ -107,7 +109,19 @@ const SymptomPage = () => {
 
         {!hasCompletedAnalysis ? (
           <div className="max-w-2xl mx-auto">
-            <SymptomForm onAnalysisComplete={handleAnalysisComplete} />
+            <div className="mb-4 flex items-center justify-end">
+              <div className="flex items-center space-x-2">
+                <Switch 
+                  id="ai-mode"
+                  checked={useAI}
+                  onCheckedChange={setUseAI}
+                />
+                <Label htmlFor="ai-mode" className="text-sm font-medium cursor-pointer">
+                  Use AI-Powered Analysis
+                </Label>
+              </div>
+            </div>
+            <SymptomForm onAnalysisComplete={handleAnalysisComplete} useAI={useAI} />
           </div>
         ) : analysisResults && (
           <motion.div 
@@ -125,7 +139,7 @@ const SymptomPage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {analysisResults.conditions.length > 0 ? (
+                  {analysisResults.conditions && analysisResults.conditions.length > 0 ? (
                     <div className="space-y-6">
                       <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList className="grid w-full grid-cols-2 mb-6">
@@ -147,7 +161,7 @@ const SymptomPage = () => {
                                   <h3 className="text-lg font-medium">{result.condition}</h3>
                                   <div className="flex items-center mt-1">
                                     <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">
-                                      Match probability: {result.probability}%
+                                      Match probability: {typeof result.probability === 'number' ? result.probability : parseFloat(String(result.probability))}%
                                     </span>
                                     <Badge className={getSeverityColor(result.severity)}>
                                       {getSeverityLabel(result.severity)}
@@ -290,6 +304,24 @@ const SymptomPage = () => {
         )}
       </div>
     </div>
+  );
+};
+
+// Define the Label component
+const Label = ({ htmlFor, className, children, ...props }: { 
+  htmlFor?: string; 
+  className?: string; 
+  children: React.ReactNode;
+  [key: string]: any;
+}) => {
+  return (
+    <label 
+      htmlFor={htmlFor} 
+      className={className}
+      {...props}
+    >
+      {children}
+    </label>
   );
 };
 
