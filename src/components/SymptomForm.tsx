@@ -78,8 +78,8 @@ const SymptomForm = ({ onAnalysisComplete, useAI = false }: SymptomFormProps) =>
       // Format the symptoms for the AI
       const symptomsText = symptoms.join(", ");
       
-      // Make the API request
-      const response = await fetch("https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent", {
+      // Make the API request to the correct Gemini endpoint
+      const response = await fetch("https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,7 +107,11 @@ const SymptomForm = ({ onAnalysisComplete, useAI = false }: SymptomFormProps) =>
       const responseData = await response.json();
       
       // Extract the text content from the Gemini response
-      const textContent = responseData.candidates[0].content.parts[0].text;
+      const textContent = responseData.candidates?.[0]?.content?.parts?.[0]?.text;
+      
+      if (!textContent) {
+        throw new Error("Invalid response format from Gemini API");
+      }
       
       // Extract just the JSON part from the response
       const jsonMatch = textContent.match(/\{[\s\S]*\}/);
